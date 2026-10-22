@@ -1,3 +1,22 @@
+import os
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import threading
+
+# Render-in tələb etdiyi portu açmaq üçün kiçik server
+class SimpleHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot is alive!")
+
+def run_web_server():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(("0.0.0.0", port), SimpleHandler)
+    server.serve_forever()
+
+# Veb-serveri arxa fonda işə salırıq
+threading.Thread(target=run_web_server, daemon=True).start()
+
 import logging
 import re
 from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
